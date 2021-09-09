@@ -1,12 +1,11 @@
+import 'package:cuidapet_api/config/push_notification_config.dart';
 import 'package:dio/dio.dart';
 
 class PushNotificationHelper {
   static Future<void> sendMessage(List<String> devices, String title,
       String body, Map<String, dynamic> payload) async {
-    final header = BaseOptions(headers: {
-      'Authorization':
-          'key=AAAA42xD_mE:APA91bGLoQIuH3Uo9Io5tPZYlbFLUzpwxQjBWrjF067PnalpRZIRljMwI9wUhymZ78e4XI9fDImZyKzxepuGVXbKkf-TB6A4TW6ndQ0ns8RbcBCxZS0_tLbS2kIjjZRITAq4U-0Unu54'
-    });
+    final header = BaseOptions(
+        headers: {'Authorization': 'key=${PushNotificationConfig.token}'});
     final request = {
       "notification": {"body": body, "title": title},
       "priority": "high",

@@ -1,4 +1,5 @@
 import 'package:cuidapet_api/config/database_params_config.dart';
+import 'package:cuidapet_api/config/push_notification_config.dart';
 import 'package:cuidapet_api/routers/agendamento_router.dart';
 import 'package:cuidapet_api/routers/categorias_router.dart';
 import 'package:cuidapet_api/routers/chat_router.dart';
@@ -21,14 +22,22 @@ class CuidapetApiChannel extends ApplicationChannel {
   /// This method is invoked prior to [entryPoint] being accessed.
   @override
   Future prepare() async {
-    logger.onRecord.listen((rec) => print("$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}"));
-    
+    logger.onRecord.listen(
+        (rec) => print("$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}"));
+
     // Carregando os dados do banco de dados
     DatabaseParamsConfig.load(options.configurationFilePath);
-    
+    PushNotificationConfig.load(options.certificateFilePath);
+
     // Habilitando Cors
     CORSPolicy.defaultPolicy.allowedOrigins = ['*'];
-    CORSPolicy.defaultPolicy.allowedMethods = ["PATCH", "GET", "POST", "PUT", "DELETE"];
+    CORSPolicy.defaultPolicy.allowedMethods = [
+      "PATCH",
+      "GET",
+      "POST",
+      "PUT",
+      "DELETE"
+    ];
     CORSPolicy.defaultPolicy.allowedRequestHeaders = ["*"];
     CORSPolicy.defaultPolicy.allowCredentials = true;
   }
@@ -48,7 +57,7 @@ class CuidapetApiChannel extends ApplicationChannel {
     AgendamentoRouter().configure(router);
     UsuarioRouters().configure(router);
     ChatRouter().configure(router);
-    
+
     return router;
   }
 }
