@@ -27,7 +27,7 @@ class CuidapetApiChannel extends ApplicationChannel {
 
     // Carregando os dados do banco de dados
     DatabaseParamsConfig.load(options.configurationFilePath);
-    PushNotificationConfig.load(options.certificateFilePath);
+    PushNotificationConfig.load(options.configurationFilePath);
 
     // Habilitando Cors
     CORSPolicy.defaultPolicy.allowedOrigins = ['*'];
