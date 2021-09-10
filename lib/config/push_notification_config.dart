@@ -9,7 +9,7 @@ class PushNotificationConfig {
     final config = loadYaml(contents) as Map<dynamic, dynamic>;
 
     final String pushNotificationToken =
-        config['pushNotificationToken'] as String;
+        config['push_notification_token'] as String;
     token = pushNotificationToken;
   }
 }

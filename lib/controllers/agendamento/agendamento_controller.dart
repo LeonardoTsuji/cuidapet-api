@@ -14,7 +14,8 @@ class AgendamentoController extends ResourceController {
   final _chatRepository = ChatRepository();
 
   @Operation.post()
-  Future<Response> agendarServico(@Bind.body() AgendarServicoRQ agendaServicoRq) async {
+  Future<Response> agendarServico(
+      @Bind.body() AgendarServicoRQ agendaServicoRq) async {
     final UsuarioModel user = request.attachments['user'] as UsuarioModel;
     await _repository.agendar(user.id, agendaServicoRq);
     return Response.ok({});
@@ -28,7 +29,8 @@ class AgendamentoController extends ResourceController {
   }
 
   Future<Response> buscarAgendamentoDoFornecedor(UsuarioModel user) async {
-    final agendamentos = await _repository.buscarTodosAgendamentosFornecedor(user.fornecedorId);
+    final agendamentos =
+        await _repository.buscarTodosAgendamentosFornecedor(user.fornecedorId);
     return Response.ok(agendamentos.map((a) => a.toMap()).toList());
   }
 
@@ -44,10 +46,16 @@ class AgendamentoController extends ResourceController {
     );
   }
 
-  Future<void> iniciarChat(int agenda) async {
+  Future<int> iniciarChat(int agenda) async {
     final chat = await _chatRepository.iniciarChat(agenda);
-    final aparelhosUsuario = await _chatRepository.recuperarDeviceIdPorChat(chat, 'U');
+    final aparelhosUsuario =
+        await _chatRepository.recuperarDeviceIdPorChat(chat, 'U');
     final chatDados = await _chatRepository.recuperarPorId(chat);
-    await PushNotificationHelper.sendMessage(aparelhosUsuario, "Sobre seu agendamento", 'O Pet Gostaria de falar com você', {'type': 'CHAT_MESSAGE', 'chat': chatDados.toMap()});
+    await PushNotificationHelper.sendMessage(
+        aparelhosUsuario,
+        "Sobre seu agendamento",
+        'O Pet Gostaria de falar com você',
+        {'type': 'CHAT_MESSAGE', 'chat': chatDados.toMap()});
+    return chat;
   }
 }

@@ -8,41 +8,45 @@ import '../cuidapet_api.dart';
 class AgendamentoRouter implements IRoutersConfig {
   @override
   void configure(Router router) {
-    
     // OK
-    router.route('/agendamento/agendar')
-      .link(() => JwtAuthenticationMiddleware())
-      .link(() => AgendamentoController());
+    router
+        .route('/agendamento/agendar')
+        .link(() => JwtAuthenticationMiddleware())
+        .link(() => AgendamentoController());
     // OK
-    router.route('/agendamentos')
-      .link(() => JwtAuthenticationMiddleware())
-      .link(() => AgendamentoController());
+    router
+        .route('/agendamentos')
+        .link(() => JwtAuthenticationMiddleware())
+        .link(() => AgendamentoController());
 
+    router
+        .route('/agendamentos/fornecedor')
+        .link(() => JwtAuthenticationMiddleware())
+        .linkFunction((request) {
+      return AgendamentoController().buscarAgendamentoDoFornecedor(
+          request.attachments['user'] as UsuarioModel);
+    });
 
-      router.route('/agendamentos/fornecedor')
-      .link(() => JwtAuthenticationMiddleware())
-      .linkFunction((request) {
-        return AgendamentoController()
-          .buscarAgendamentoDoFornecedor(request.attachments['user'] as UsuarioModel);
-      });
+    // OK
+    router
+        .route('/agendamento/:id/status/:status')
+        .link(() => JwtAuthenticationMiddleware())
+        .linkFunction((request) async {
+      print(request.path.variables);
+      final v = request.path.variables;
+      await AgendamentoController()
+          .alteraStatus(int.parse(v['id']), v['status']);
+      return Response.ok({});
+    });
 
-      // OK
-      router.route('/agendamento/:id/status/:status')
-      .link(() => JwtAuthenticationMiddleware())
-      .linkFunction((request) async {
-        print(request.path.variables);
-        final v = request.path.variables;
-        await AgendamentoController().alteraStatus(int.parse(v['id']) , v['status']);
-        return Response.ok({});
-      });
-
-      router.route('/agendamento/:id/iniciar-chat')
-      .link(() => JwtAuthenticationMiddleware())
-      .linkFunction((request) async {
-        final v = request.path.variables;
-        await AgendamentoController().iniciarChat(int.parse(v['id']));
-        return Response.ok({});
-      });
-
+    router
+        .route('/agendamento/:id/iniciar-chat')
+        .link(() => JwtAuthenticationMiddleware())
+        .linkFunction((request) async {
+      final v = request.path.variables;
+      final chatId =
+          await AgendamentoController().iniciarChat(int.parse(v['id']));
+      return Response.ok({'id': chatId});
+    });
   }
 }
